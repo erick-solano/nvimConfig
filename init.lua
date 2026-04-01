@@ -9,7 +9,7 @@ end })
 
 vim.pack.add({
   'https://github.com/nvim-treesitter/nvim-treesitter',
-  'https://codeberg.org/andyg/leap.nvim.git',
+  'https://github.com/folke/flash.nvim.git',
   'https://github.com/catppuccin/nvim.git',
   'https://github.com/folke/which-key.nvim.git',
   'https://github.com/nvim-telescope/telescope.nvim.git',
@@ -19,9 +19,24 @@ vim.pack.add({
   'https://github.com/hrsh7th/cmp-buffer',
   'https://github.com/hrsh7th/cmp-path',
 })
---keys for leap.nvim
-vim.keymap.set({'n', 'x', 'o'}, 's', '<Plug>(leap)')
-vim.keymap.set('n',             'S', '<Plug>(leap-from-window)')
+
+
+-- Flash.nvim with red labels
+local flash = require("flash")
+
+
+
+-- 's' in normal, visual, operator-pending
+vim.keymap.set({ "n", "x", "o" }, "s", function()
+  flash.jump()
+end, { desc = "Flash jump" })
+
+-- 'S' in normal mode → multi-window jump
+vim.keymap.set("n", "S", function()
+  flash.jump({ search = { multi_window = true } })
+end, { desc = "Flash jump across windows" })
+
+
 --Change Theme to Mocha flavor of catppuccin
 vim.g.catppuccin_flavour = "mocha"
 vim.cmd([[colorscheme catppuccin]])
@@ -62,3 +77,19 @@ cmp.setup({
     { name = 'path' },
   },
 })
+-- Subtle yank highlight like LazyVim
+vim.api.nvim_set_hl(0, 'YankHighlight', { bg = '#ff966c', fg = nil })  -- light yellow background, keep text color
+vim.api.nvim_create_autocmd('TextYankPost', {
+  callback = function()
+    vim.highlight.on_yank({ higroup = 'YankHighlight', timeout = 200 })
+  end
+})
+
+
+
+-- Set the highlight for Flash labels (keys to press) Must be here because theme messes with the labels
+vim.api.nvim_set_hl(0, "FlashLabel", { 
+  fg = "#FFFFFF", bg = "#ff017c", bold = true 
+})
+-- Clipboard Tweak - Adds yanked things to clipboard automatically
+vim.opt.clipboard = "unnamedplus"
