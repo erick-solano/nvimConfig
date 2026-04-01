@@ -20,6 +20,7 @@ vim.pack.add({
   'https://github.com/hrsh7th/cmp-path',
   'https://github.com/luukvbaal/statuscol.nvim.git',
   'https://github.com/lukas-reineke/indent-blankline.nvim.git',
+  'https://github.com/kylechui/nvim-surround.git',
 })
 
 
@@ -48,46 +49,6 @@ vim.g.maplocalleader = " "
 --Telescope
 local builtin = require('telescope.builtin')
 vim.keymap.set('n', '<leader>ff', builtin.find_files, { desc = 'Telescope find files' })
-vim.keymap.set('n', '<leader>fg', builtin.live_grep, { desc = 'Telescope live grep' })
-
-vim.opt.wildmenu = true
-vim.opt.wildmode = "longest:full,full"
-
---Treesitter
-vim.opt.foldlevel = 99
-vim.wo.foldmethod = "expr"
-vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"
-
---CMP setup: 
---autocomplete = false, -- manual trigger only
-local cmp = require("cmp")
-cmp.setup({
-  completion = {
-    autocomplete = { cmp.TriggerEvent.TextChanged },  -- auto popup on typing
-  },
-
-  mapping = {
-    ['<CR>'] = cmp.mapping.confirm({ select = false }),  -- Enter confirms selected item
-    ['<C-e>'] = cmp.mapping.abort(),                     -- Ctrl+e cancels menu
-    ['<Tab>'] = cmp.mapping.select_next_item(),          -- optional Tab navigation
-    ['<S-Tab>'] = cmp.mapping.select_prev_item(),
-  },
-
-  sources = {
-    { name = 'buffer' },
-    { name = 'path' },
-  },
-})
--- Subtle yank highlight like LazyVim
-vim.api.nvim_set_hl(0, 'YankHighlight', { bg = '#ff966c', fg = nil })  -- light yellow background, keep text color
-vim.api.nvim_create_autocmd('TextYankPost', {
-  callback = function()
-    vim.highlight.on_yank({ higroup = 'YankHighlight', timeout = 200 })
-  end
-})
-
-
-
 -- Set the highlight for Flash labels (keys to press) Must be here because theme messes with the labels
 vim.api.nvim_set_hl(0, "FlashLabel", { 
   fg = "#FFFFFF", bg = "#ff017c", bold = true 
@@ -106,3 +67,29 @@ vim.opt.number=true
 vim.opt.relativenumber=true
 vim.opt.signcolumn="yes"
 require("ibl").setup()
+
+vim.lsp.config('luals', {
+  cmd = {'lua-language-server'},
+  filetypes = {'lua'},
+  root_markers = {'.luarc.json', '.luarc.jsonc'},
+})
+
+vim.diagnostic.config({ update_in_insert = true })
+vim.lsp.enable('luals')
+
+vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { silent = true, desc = "Hover Error/Warning Info" })
+
+
+
+vim.g.nvim_surround_no_mappings = 1
+vim.keymap.set("n", "y,", "<Plug>(nvim-surround-normal)", { remap = true, desc = "Surround add with ," })
+vim.keymap.set("n", "y,,", "<Plug>(nvim-surround-normal-cur)", { remap = true, desc = "Surround current word/line with ," })
+
+vim.keymap.set("n", "d,", "<Plug>(nvim-surround-delete)", { remap = true, desc = "Surround delete with ," })
+vim.keymap.set("n", "c,", "<Plug>(nvim-surround-change)", { remap = true, desc = "Surround change with ," })
+
+-- Visual mode
+vim.keymap.set("x", ",", "<Plug>(nvim-surround-visual)", { remap = true, desc = "Surround visual selection with ," })
+
+-- Insert mode (optional)
+vim.keymap.set("i", "<C-g>,", "<Plug>(nvim-surround-insert)", { remap = true, desc = "Surround in insert mode with ," })
