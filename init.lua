@@ -18,6 +18,8 @@ vim.pack.add({
   'https://github.com/hrsh7th/cmp-nvim-lsp',
   'https://github.com/hrsh7th/cmp-buffer',
   'https://github.com/hrsh7th/cmp-path',
+  'https://github.com/luukvbaal/statuscol.nvim.git',
+  'https://github.com/lukas-reineke/indent-blankline.nvim.git',
 })
 
 
@@ -53,7 +55,6 @@ vim.opt.wildmode = "longest:full,full"
 
 --Treesitter
 vim.opt.foldlevel = 99
-vim.opt.foldcolumn = "1"
 vim.wo.foldmethod = "expr"
 vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"
 
@@ -91,5 +92,17 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 vim.api.nvim_set_hl(0, "FlashLabel", { 
   fg = "#FFFFFF", bg = "#ff017c", bold = true 
 })
--- Clipboard Tweak - Adds yanked things to clipboard automatically
-vim.opt.clipboard = "unnamedplus"
+vim.wo.foldmethod = "expr"
+vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+vim.opt.foldlevel = 99
+vim.opt.foldenable = true
+vim.opt.foldcolumn = "2"
+vim.opt.fillchars = {
+    fold = "▸",
+    foldopen = "▾",
+    foldsep = "│",
+}
+vim.opt.number=true
+vim.opt.relativenumber=true
+vim.opt.signcolumn="yes"
+require("ibl").setup()
