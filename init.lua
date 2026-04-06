@@ -8,7 +8,7 @@ end })
 --add packages
 
 vim.pack.add({
-  --'https://github.com/nvim-treesitter/nvim-treesitter',
+  'https://github.com/nvim-treesitter/nvim-treesitter',
   'https://github.com/folke/flash.nvim.git',
   'https://github.com/catppuccin/nvim.git',
   'https://github.com/folke/which-key.nvim.git',
@@ -23,15 +23,12 @@ vim.pack.add({
   'https://github.com/kylechui/nvim-surround.git',
 })
 
-
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = { '<filetype>' },
+  callback = function() vim.treesitter.start() end,
+})
 -- Flash.nvim with red labels
 local flash = require("flash")
--- Emable vim native treesitter
-vim.api.nvim_create_autocmd("FileType", {
-  callback = function(ev)
-    pcall(vim.treesitter.start, ev.buf)
-  end,
-})
 -- 's' in normal, visual, operator-pending
 vim.keymap.set({ "n", "x", "o" }, "s", function()
   flash.jump()
@@ -96,3 +93,10 @@ vim.keymap.set("x", ",", "<Plug>(nvim-surround-visual)", { remap = true, desc = 
 
 -- Insert mode (optional)
 vim.keymap.set("i", "<C-g>,", "<Plug>(nvim-surround-insert)", { remap = true, desc = "Surround in insert mode with ," })
+
+
+vim.api.nvim_create_autocmd("TextYankPost", {
+  callback = function()
+    vim.highlight.on_yank({ higroup = "IncSearch", timeout = 150 })
+  end,
+})
