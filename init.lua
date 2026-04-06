@@ -8,7 +8,7 @@ end })
 --add packages
 
 vim.pack.add({
-  'https://github.com/nvim-treesitter/nvim-treesitter',
+  --'https://github.com/nvim-treesitter/nvim-treesitter',
   'https://github.com/folke/flash.nvim.git',
   'https://github.com/catppuccin/nvim.git',
   'https://github.com/folke/which-key.nvim.git',
@@ -26,9 +26,12 @@ vim.pack.add({
 
 -- Flash.nvim with red labels
 local flash = require("flash")
-
-
-
+-- Emable vim native treesitter
+vim.api.nvim_create_autocmd("FileType", {
+  callback = function(ev)
+    pcall(vim.treesitter.start, ev.buf)
+  end,
+})
 -- 's' in normal, visual, operator-pending
 vim.keymap.set({ "n", "x", "o" }, "s", function()
   flash.jump()
