@@ -1,3 +1,4 @@
+vim.opt.runtimepath:prepend(vim.fn.stdpath("data") .. "/site")
 vim.api.nvim_create_autocmd('PackChanged', { callback = function(ev)
   local name, kind = ev.data.spec.name, ev.data.kind
   if name == 'nvim-treesitter' and kind == 'update' then
@@ -23,10 +24,6 @@ vim.pack.add({
   'https://github.com/kylechui/nvim-surround.git',
 })
 
-vim.api.nvim_create_autocmd('FileType', {
-  pattern = { '<filetype>' },
-  callback = function() vim.treesitter.start() end,
-})
 -- Flash.nvim with red labels
 local flash = require("flash")
 -- 's' in normal, visual, operator-pending
@@ -67,15 +64,34 @@ vim.opt.number=true
 vim.opt.relativenumber=true
 vim.opt.signcolumn="yes"
 require("ibl").setup()
+vim.opt.expandtab = true
+vim.opt.tabstop = 2
+vim.opt.shiftwidth = 2
+vim.opt.softtabstop = 2
+
+
+local capabilities = require('cmp_nvim_lsp').default_capabilities()
 
 vim.lsp.config('luals', {
   cmd = {'lua-language-server'},
   filetypes = {'lua'},
-  root_markers = {'.luarc.json', '.luarc.jsonc'},
+  root_markers = {'.luarc.json', '.luarc.jsonc', '.git'},
+  capabilities = capabilities,
 })
 
 vim.diagnostic.config({ update_in_insert = true })
 vim.lsp.enable('luals')
+
+
+vim.lsp.config('cls', {
+  cmd = {'clangd'},
+  filetypes = {'c'},
+  root_markers = {'.git'},
+  capabilities = capabilities,
+})
+vim.diagnostic.config({ update_in_insert = true })
+vim.lsp.enable('cls')
+
 
 vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { silent = true, desc = "Hover Error/Warning Info" })
 
@@ -97,6 +113,6 @@ vim.keymap.set("i", "<C-g>,", "<Plug>(nvim-surround-insert)", { remap = true, de
 
 vim.api.nvim_create_autocmd("TextYankPost", {
   callback = function()
-    vim.highlight.on_yank({ higroup = "IncSearch", timeout = 150 })
+    vim.highlight.on_yank({ higroup = "IncSearch", timeout = 100 })
   end,
 })
