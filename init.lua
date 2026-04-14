@@ -7,7 +7,6 @@ vim.api.nvim_create_autocmd('PackChanged', { callback = function(ev)
   end
 end })
 --add packages
-
 vim.pack.add({
   'https://github.com/nvim-treesitter/nvim-treesitter',
   'https://github.com/folke/flash.nvim.git',
@@ -83,18 +82,17 @@ vim.diagnostic.config({ update_in_insert = true })
 vim.lsp.enable('luals')
 
 
-vim.lsp.config('cls', {
+vim.lsp.config('clangd', {
   cmd = {'clangd'},
-  filetypes = {'c'},
-  root_markers = {'.git'},
+  filetypes = {'c', 'cpp'},
+  root_markers = {'.git', 'compile_commands.json'},
   capabilities = capabilities,
 })
 vim.diagnostic.config({ update_in_insert = true })
-vim.lsp.enable('cls')
+vim.lsp.enable('clangd')
 
 
 vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { silent = true, desc = "Hover Error/Warning Info" })
-
 
 
 vim.g.nvim_surround_no_mappings = 1
@@ -115,4 +113,22 @@ vim.api.nvim_create_autocmd("TextYankPost", {
   callback = function()
     vim.highlight.on_yank({ higroup = "IncSearch", timeout = 100 })
   end,
+})
+
+local cmp = require('cmp')
+
+cmp.setup({
+  mapping = cmp.mapping.preset.insert({
+    ['<C-Space>'] = cmp.mapping.complete(),
+
+    ['<CR>'] = cmp.mapping.confirm({
+      select = true,
+    }),
+  }),
+
+  sources = {
+    { name = 'nvim_lsp' },
+    { name = 'buffer' },
+    { name = 'path' },
+  }
 })
