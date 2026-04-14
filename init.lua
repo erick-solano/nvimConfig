@@ -21,6 +21,7 @@ vim.pack.add({
   'https://github.com/luukvbaal/statuscol.nvim.git',
   'https://github.com/lukas-reineke/indent-blankline.nvim.git',
   'https://github.com/kylechui/nvim-surround.git',
+  'https://github.com/nvim-mini/mini.misc.git',
 })
 
 -- Flash.nvim with red labels
@@ -35,6 +36,9 @@ vim.keymap.set("n", "S", function()
   flash.jump({ search = { multi_window = true } })
 end, { desc = "Flash jump across windows" })
 
+MiniMisc = require("mini.misc")
+MiniMisc.setup()
+MiniMisc.setup_auto_root({".git"})
 
 --Change Theme to Mocha flavor of catppuccin
 vim.g.catppuccin_flavour = "mocha"
@@ -102,6 +106,8 @@ vim.keymap.set("n", "y,,", "<Plug>(nvim-surround-normal-cur)", { remap = true, d
 vim.keymap.set("n", "d,", "<Plug>(nvim-surround-delete)", { remap = true, desc = "Surround delete with ," })
 vim.keymap.set("n", "c,", "<Plug>(nvim-surround-change)", { remap = true, desc = "Surround change with ," })
 
+
+
 -- Visual mode
 vim.keymap.set("x", ",", "<Plug>(nvim-surround-visual)", { remap = true, desc = "Surround visual selection with ," })
 
@@ -132,3 +138,6 @@ cmp.setup({
     { name = 'path' },
   }
 })
+
+vim.api.nvim_create_user_command('Test', 'echo "It works!"', {})
+
