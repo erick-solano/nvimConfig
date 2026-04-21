@@ -22,8 +22,14 @@ vim.pack.add({
   'https://github.com/lukas-reineke/indent-blankline.nvim.git',
   'https://github.com/kylechui/nvim-surround.git',
   'https://github.com/nvim-mini/mini.misc.git',
+  "https://github.com/sphamba/smear-cursor.nvim",
 })
-
+local cursor = require('smear_cursor')
+cursor.setup({
+  stiffness = 0.3,
+  trailing_stiffness = 0.4,
+  matrix_pixel_threshold = 0.5,
+})
 -- Flash.nvim with red labels
 local flash = require("flash")
 -- 's' in normal, visual, operator-pending
