@@ -30,7 +30,7 @@ vim.pack.add({
 })
 
 -- ============================================================
--- SMEAR CURSOR
+-- smear cursor
 -- ============================================================
 local cursor = require('smear_cursor')
 cursor.setup({
@@ -52,6 +52,27 @@ MiniMisc.setup_auto_root({".git"})
 -- Change Theme to Mocha flavor of catppuccin
 vim.g.catppuccin_flavour = "mocha"
 vim.cmd([[colorscheme catppuccin]])
+
+-- ============================================================
+-- FLASH.NVIM (with red labels)
+-- ============================================================
+local flash = require("flash")
+
+-- 's' in normal, visual, operator-pending
+vim.keymap.set({ "n", "x", "o" }, "s", function()
+  flash.jump()
+end, { desc = "Flash jump" })
+
+-- 'S' in normal mode → multi-window jump
+vim.keymap.set("n", "S", function()
+  flash.jump({ search = { multi_window = true } })
+end, { desc = "Flash jump across windows" })
+
+-- Set the highlight for Flash labels (keys to press)
+-- Must be here because theme messes with the labels
+vim.api.nvim_set_hl(0, "FlashLabel", {
+  fg = "#FFFFFF", bg = "#ff017c", bold = true
+})
 
 -- ============================================================
 -- LEADER KEY
@@ -173,25 +194,4 @@ cmp.setup({
     { name = 'buffer' },
     { name = 'path' },
   }
-})
-
--- ============================================================
--- FLASH.NVIM (with red labels)
--- ============================================================
-local flash = require("flash")
-
--- 's' in normal, visual, operator-pending
-vim.keymap.set({ "n", "x", "o" }, "s", function()
-  flash.jump()
-end, { desc = "Flash jump" })
-
--- 'S' in normal mode → multi-window jump
-vim.keymap.set("n", "S", function()
-  flash.jump({ search = { multi_window = true } })
-end, { desc = "Flash jump across windows" })
-
--- Set the highlight for Flash labels (keys to press)
--- Must be here because theme messes with the labels
-vim.api.nvim_set_hl(0, "FlashLabel", {
-  fg = "#FFFFFF", bg = "#ff017c", bold = true
 })
