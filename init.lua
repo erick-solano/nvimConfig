@@ -1,3 +1,6 @@
+-- ============================================================
+-- PACKAGE MANAGEMENT (vim.pack)
+-- ============================================================
 vim.opt.runtimepath:prepend(vim.fn.stdpath("data") .. "/site")
 vim.api.nvim_create_autocmd('PackChanged', { callback = function(ev)
   local name, kind = ev.data.spec.name, ev.data.kind
@@ -6,7 +9,8 @@ vim.api.nvim_create_autocmd('PackChanged', { callback = function(ev)
     vim.cmd('TSUpdate')
   end
 end })
---add packages
+
+-- add packages
 vim.pack.add({
   'https://github.com/nvim-treesitter/nvim-treesitter',
   'https://github.com/folke/flash.nvim.git',
@@ -24,41 +28,46 @@ vim.pack.add({
   'https://github.com/nvim-mini/mini.misc.git',
   "https://github.com/sphamba/smear-cursor.nvim",
 })
+
+-- ============================================================
+-- SMEAR CURSOR
+-- ============================================================
 local cursor = require('smear_cursor')
 cursor.setup({
   stiffness = 0.3,
   trailing_stiffness = 0.4,
   matrix_pixel_threshold = 0.5,
 })
--- Flash.nvim with red labels
-local flash = require("flash")
--- 's' in normal, visual, operator-pending
-vim.keymap.set({ "n", "x", "o" }, "s", function()
-  flash.jump()
-end, { desc = "Flash jump" })
 
--- 'S' in normal mode → multi-window jump
-vim.keymap.set("n", "S", function()
-  flash.jump({ search = { multi_window = true } })
-end, { desc = "Flash jump across windows" })
-
+-- ============================================================
+-- MINI.MISC
+-- ============================================================
 MiniMisc = require("mini.misc")
 MiniMisc.setup()
 MiniMisc.setup_auto_root({".git"})
 
---Change Theme to Mocha flavor of catppuccin
+-- ============================================================
+-- COLORSCHEME (catppuccin)
+-- ============================================================
+-- Change Theme to Mocha flavor of catppuccin
 vim.g.catppuccin_flavour = "mocha"
 vim.cmd([[colorscheme catppuccin]])
---Leader Key
+
+-- ============================================================
+-- LEADER KEY
+-- ============================================================
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
---Telescope
+
+-- ============================================================
+-- TELESCOPE
+-- ============================================================
 local builtin = require('telescope.builtin')
 vim.keymap.set('n', '<leader>ff', builtin.find_files, { desc = 'Telescope find files' })
--- Set the highlight for Flash labels (keys to press) Must be here because theme messes with the labels
-vim.api.nvim_set_hl(0, "FlashLabel", { 
-  fg = "#FFFFFF", bg = "#ff017c", bold = true 
-})
+
+-- ============================================================
+-- FOLDING (treesitter-based)
+-- ============================================================
 vim.wo.foldmethod = "expr"
 vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"
 vim.opt.foldlevel = 99
@@ -69,18 +78,34 @@ vim.opt.fillchars = {
     foldopen = "▾",
     foldsep = "│",
 }
+
+-- ============================================================
+-- LINE NUMBERS / SIGN COLUMN
+-- ============================================================
 vim.opt.number=true
 vim.opt.relativenumber=true
 vim.opt.signcolumn="yes"
+
+-- ============================================================
+-- INDENT-BLANKLINE
+-- ============================================================
 require("ibl").setup()
+
+-- ============================================================
+-- INDENTATION / TABS
+-- ============================================================
 vim.opt.expandtab = true
 vim.opt.tabstop = 2
 vim.opt.shiftwidth = 2
 vim.opt.softtabstop = 2
+vim.opt.scrolloff = 8
 
-
+-- ============================================================
+-- LSP (via nvim-cmp capabilities)
+-- ============================================================
 local capabilities = require('cmp_nvim_lsp').default_capabilities()
 
+-- Lua LSP
 vim.lsp.config('luals', {
   cmd = {'lua-language-server'},
   filetypes = {'lua'},
@@ -91,7 +116,7 @@ vim.lsp.config('luals', {
 vim.diagnostic.config({ update_in_insert = true })
 vim.lsp.enable('luals')
 
-
+-- C/C++ LSP (clangd)
 vim.lsp.config('clangd', {
   cmd = {'clangd'},
   filetypes = {'c', 'cpp'},
@@ -101,10 +126,12 @@ vim.lsp.config('clangd', {
 vim.diagnostic.config({ update_in_insert = true })
 vim.lsp.enable('clangd')
 
-
+-- Diagnostics keymap
 vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { silent = true, desc = "Hover Error/Warning Info" })
 
-
+-- ============================================================
+-- nvim-surround (custom "," mappings instead of default "s")
+-- ============================================================
 vim.g.nvim_surround_no_mappings = 1
 vim.keymap.set("n", "y,", "<Plug>(nvim-surround-normal)", { remap = true, desc = "Surround add with ," })
 vim.keymap.set("n", "y,,", "<Plug>(nvim-surround-normal-cur)", { remap = true, desc = "Surround current word/line with ," })
@@ -112,21 +139,24 @@ vim.keymap.set("n", "y,,", "<Plug>(nvim-surround-normal-cur)", { remap = true, d
 vim.keymap.set("n", "d,", "<Plug>(nvim-surround-delete)", { remap = true, desc = "Surround delete with ," })
 vim.keymap.set("n", "c,", "<Plug>(nvim-surround-change)", { remap = true, desc = "Surround change with ," })
 
-
-
 -- Visual mode
 vim.keymap.set("x", ",", "<Plug>(nvim-surround-visual)", { remap = true, desc = "Surround visual selection with ," })
 
 -- Insert mode (optional)
 vim.keymap.set("i", "<C-g>,", "<Plug>(nvim-surround-insert)", { remap = true, desc = "Surround in insert mode with ," })
 
-
+-- ============================================================
+-- yank highlight
+-- ============================================================
 vim.api.nvim_create_autocmd("TextYankPost", {
   callback = function()
     vim.highlight.on_yank({ higroup = "IncSearch", timeout = 100 })
   end,
 })
 
+-- ============================================================
+-- nvim-cmp (autocompletion)
+-- ============================================================
 local cmp = require('cmp')
 
 cmp.setup({
@@ -145,5 +175,23 @@ cmp.setup({
   }
 })
 
-vim.api.nvim_create_user_command('Test', 'echo "It works!"', {})
+-- ============================================================
+-- FLASH.NVIM (with red labels)
+-- ============================================================
+local flash = require("flash")
 
+-- 's' in normal, visual, operator-pending
+vim.keymap.set({ "n", "x", "o" }, "s", function()
+  flash.jump()
+end, { desc = "Flash jump" })
+
+-- 'S' in normal mode → multi-window jump
+vim.keymap.set("n", "S", function()
+  flash.jump({ search = { multi_window = true } })
+end, { desc = "Flash jump across windows" })
+
+-- Set the highlight for Flash labels (keys to press)
+-- Must be here because theme messes with the labels
+vim.api.nvim_set_hl(0, "FlashLabel", {
+  fg = "#FFFFFF", bg = "#ff017c", bold = true
+})
