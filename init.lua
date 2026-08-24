@@ -16,7 +16,6 @@ vim.pack.add({
   'https://github.com/folke/flash.nvim.git',
   'https://github.com/catppuccin/nvim.git',
   'https://github.com/folke/which-key.nvim.git',
-  'https://github.com/nvim-telescope/telescope.nvim.git',
   'https://github.com/nvim-lua/plenary.nvim.git',
   'https://github.com/hrsh7th/nvim-cmp',
   'https://github.com/hrsh7th/cmp-nvim-lsp',
@@ -27,6 +26,10 @@ vim.pack.add({
   'https://github.com/kylechui/nvim-surround.git',
   'https://github.com/nvim-mini/mini.misc.git',
   "https://github.com/sphamba/smear-cursor.nvim",
+  "https://github.com/sindrets/diffview.nvim.git",
+  "https://github.com/neovim/nvim-lspconfig",
+  "https://github.com/ibhagwan/fzf-lua.git",
+  "https://github.com/stevearc/oil.nvim.git",
 })
 
 -- ============================================================
@@ -79,13 +82,6 @@ vim.api.nvim_set_hl(0, "FlashLabel", {
 -- ============================================================
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
-
--- ============================================================
---telescope 
--- ============================================================
-local builtin = require('telescope.builtin')
-vim.keymap.set('n', '<leader>ff', builtin.find_files, { desc = 'Telescope find files' })
-
 -- ============================================================
 -- FOLDING (treesitter-based)
 -- ============================================================
@@ -141,8 +137,7 @@ vim.lsp.enable('luals')
 vim.lsp.config('clangd', {
   cmd = {'clangd'},
   filetypes = {'c', 'cpp'},
-  root_markers = {'.git', 'compile_commands.json'},
-  capabilities = capabilities,
+  root_markers = {'.git', 'compile_commands.json'}, capabilities = capabilities,
 })
 vim.diagnostic.config({ update_in_insert = true })
 vim.lsp.enable('clangd')
@@ -219,13 +214,33 @@ vim.api.nvim_set_hl(0, "FlashLabel", {
 -- ============================================================
 -- LSP-CONFIG (Pre-set lsp configurations)
 -- ============================================================
-vim.pack.add{
-  { src = 'https://github.com/neovim/nvim-lspconfig' },
-}
+-- Lsps will not work unless specified here, and installed. 
+
 -- ============================================================
 -- diffview (for git conflicts) 
 -- ============================================================
 
-vim.pack.add{
-  { src = 'https://github.com/sindrets/diffview.nvim.git' },
-}
+-- ============================================================
+-- fzf-lua (Fuzzy-finder/grep)
+-- ============================================================
+local fzf = require("fzf-lua")
+
+vim.keymap.set("n", "<leader>fg", function()
+  fzf.live_grep_native()
+end, { desc = "Search all files in working directory" }
+)
+
+vim.keymap.set("n", "<leader>ff", function()
+  fzf.files()
+end, { desc = "Find File by Name" }
+)
+vim.keymap.set("n", "<leader>fi", function()
+  fzf.lgrep_curbuf()
+end, { desc = "Find in File" }
+)
+-- ============================================================
+-- oil.nvim (file editing/nav)
+-- ============================================================
+local oil = require("oil").setup()
+vim.keymap.set("n", "<leader>o", "<CMD>Oil<CR>", { desc = "Open parent directory" })
+
