@@ -60,7 +60,7 @@ vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
 -- ============================================================
--- TELESCOPE
+--telescope 
 -- ============================================================
 local builtin = require('telescope.builtin')
 vim.keymap.set('n', '<leader>ff', builtin.find_files, { desc = 'Telescope find files' })
@@ -195,3 +195,9 @@ end, { desc = "Flash jump across windows" })
 vim.api.nvim_set_hl(0, "FlashLabel", {
   fg = "#FFFFFF", bg = "#ff017c", bold = true
 })
+-- ============================================================
+-- LSP-CONFIG (Pre-set lsp configurations)
+-- ============================================================
+vim.pack.add{
+  { src = 'https://github.com/neovim/nvim-lspconfig' },
+}
