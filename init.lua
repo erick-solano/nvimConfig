@@ -145,8 +145,7 @@ vim.lsp.enable('clangd')
 -- Diagnostics keymap
 vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { silent = true, desc = "Hover Error/Warning Info" })
 
--- ============================================================
--- nvim-surround (custom "," mappings instead of default "s")
+-- ============================================================ nvim-surround (custom "," mappings instead of default "s")
 -- ============================================================
 vim.g.nvim_surround_no_mappings = 1
 vim.keymap.set("n", "y,", "<Plug>(nvim-surround-normal)", { remap = true, desc = "Surround add with ," })
@@ -241,6 +240,11 @@ end, { desc = "Find in File" }
 -- ============================================================
 -- oil.nvim (file editing/nav)
 -- ============================================================
-local oil = require("oil").setup()
+local oil = require("oil").setup({
+  view_options = {
+    show_hidden = true
+  }
+})
 vim.keymap.set("n", "<leader>o", "<CMD>Oil<CR>", { desc = "Open parent directory" })
+
 
