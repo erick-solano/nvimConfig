@@ -1,4 +1,4 @@
--- ============================================================
+
 -- PACKAGE MANAGEMENT (vim.pack)
 -- ============================================================
 vim.opt.runtimepath:prepend(vim.fn.stdpath("data") .. "/site")
@@ -17,9 +17,9 @@ vim.pack.add({
   'https://github.com/catppuccin/nvim.git',
   'https://github.com/folke/which-key.nvim.git',
   'https://github.com/nvim-lua/plenary.nvim.git',
+  'https://github.com/saghen/blink.lib',
+  'https://github.com/saghen/blink.cmp',
   'https://github.com/hrsh7th/nvim-cmp',
-  'https://github.com/hrsh7th/cmp-nvim-lsp', 'https://github.com/hrsh7th/cmp-buffer',
-  'https://github.com/hrsh7th/cmp-path',
   'https://github.com/luukvbaal/statuscol.nvim.git',
   'https://github.com/lukas-reineke/indent-blankline.nvim.git',
   'https://github.com/kylechui/nvim-surround.git',
@@ -119,8 +119,7 @@ vim.opt.scrolloff = 8
 -- ============================================================
 -- LSP (via nvim-cmp capabilities)
 -- ============================================================
-local capabilities = require('cmp_nvim_lsp').default_capabilities()
-
+local capabilities = require('blink.cmp').get_lsp_capabilities()
 -- Lua LSP
 vim.lsp.config('luals', {
   cmd = {'lua-language-server'},
@@ -144,7 +143,7 @@ vim.lsp.enable('clangd')
 -- Diagnostics keymap
 vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { silent = true, desc = "Hover Error/Warning Info" })
 
--- ============================================================ nvim-surround (custom "," mappings instead of default "s")
+-- ============================================================ nvim-ssurround (custom "," mappings instead of default "s")
 -- ============================================================
 vim.g.nvim_surround_no_mappings = 1
 vim.keymap.set("n", "y,", "<Plug>(nvim-surround-normal)", { remap = true, desc = "Surround add with ," })
@@ -169,25 +168,25 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 })
 
 -- ============================================================
--- nvim-cmp (autocompletion)
+-- Blink.cmp configuration
 -- ============================================================
-local cmp = require('cmp')
-
+local cmp = require('blink.cmp')
+cmp.build():pwait()
 cmp.setup({
-  mapping = cmp.mapping.preset.insert({
-    ['<C-Space>'] = cmp.mapping.complete(),
 
-    ['<CR>'] = cmp.mapping.confirm({
-      select = true,
-    }),
-  }),
+  keymap = { preset = 'default' },
+  completion = { documentation = { auto_show = false}},
+  sources = { default = { 'lsp', 'path', 'snippets', 'buffer'}},
+  fuzzy = { implementation = "prefer_rust" },
 
-  sources = {
-    { name = 'nvim_lsp' },
-    { name = 'buffer' },
-    { name = 'path' },
-  }
 })
+
+
+
+
+
+
+
 
 -- ============================================================
 -- FLASH.NVIM (with red labels)
