@@ -15,14 +15,12 @@ vim.pack.add({
   'https://github.com/folke/flash.nvim.git',
   'https://github.com/catppuccin/nvim.git',
   'https://github.com/folke/which-key.nvim.git',
-  'https://github.com/nvim-lua/plenary.nvim.git',
   'https://github.com/saghen/blink.lib',
   'https://github.com/saghen/blink.cmp',
   'https://github.com/hrsh7th/nvim-cmp',
   'https://github.com/luukvbaal/statuscol.nvim.git',
   'https://github.com/lukas-reineke/indent-blankline.nvim.git',
-  'https://github.com/kylechui/nvim-surround.git',
-  'https://github.com/nvim-mini/mini.misc.git',
+  'https://github.com/nvim-mini/mini.surround.git',
   "https://github.com/sphamba/smear-cursor.nvim",
   "https://github.com/sindrets/diffview.nvim.git",
   "https://github.com/neovim/nvim-lspconfig",
@@ -41,13 +39,6 @@ cursor.setup({
   trailing_stiffness = 0.4,
   matrix_pixel_threshold = 0.5,
 })
-
--- ============================================================
--- MINI.MISC
--- ============================================================
-MiniMisc = require("mini.misc")
-MiniMisc.setup()
-MiniMisc.setup_auto_root({".git"})
 
 -- ============================================================
 -- COLORSCHEME (catppuccin)
@@ -143,20 +134,19 @@ vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { silent = true, des
 --  vim.lsp.buf.definition()
 --end, {silent = true, desc = "Go to Definition" })
 -- ============================================================ 
--- nvim-ssurround (custom "," mappings instead of default "s")
+-- mini-ssurround (custom "," mappings instead of default "s")
 -- ============================================================
-vim.g.nvim_surround_no_mappings = 1
-vim.keymap.set("n", "y,", "<Plug>(nvim-surround-normal)", { remap = true, desc = "Surround add with ," })
-vim.keymap.set("n", "y,,", "<Plug>(nvim-surround-normal-cur)", { remap = true, desc = "Surround current word/line with ," })
 
-vim.keymap.set("n", "d,", "<Plug>(nvim-surround-delete)", { remap = true, desc = "Surround delete with ," })
-vim.keymap.set("n", "c,", "<Plug>(nvim-surround-change)", { remap = true, desc = "Surround change with ," })
-
--- Visual mode
-vim.keymap.set("x", "<leader>s", "<Plug>(nvim-surround-visual)", { remap = true, desc = "Surround visual selection with ," })
-
--- Insert mode (optional)
-vim.keymap.set("i", "<C-g>,", "<Plug>(nvim-surround-insert)", { remap = true, desc = "Surround in insert mode with ," })
+local surround = require('mini.surround').setup({
+mappings = {
+    add = '<leader>sa', -- Add surrounding in Normal and Visual modes
+    delete = '<leader>sd', -- Delete surrounding
+    find = '<leader>sf', -- Find surrounding (to the right)
+    find_left = '<leader>sF', -- Find surrounding (to the left)
+    highlight = '<leader>sh', -- Highlight surrounding
+    replace = '<leader>sr', -- Replace surrounding
+  },
+})
 
 -- ============================================================
 -- yank highlight
@@ -176,10 +166,7 @@ cmp.build():pwait()
 cmp.setup({
   keymap = {
   preset = 'default',
-  ['<Tab>'] = { 'select_and_accept' },
-
-
-
+  ['<Tab>'] = { 'select_and_accept', 'fallback'},
 },
   completion = { documentation = { auto_show = true }, menu = { auto_show = true }, accept = {auto_brackets = { enabled = true }}},
   sources = { default = { 'lsp', 'path', 'snippets', 'buffer'}},
