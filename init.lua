@@ -123,25 +123,11 @@ vim.opt.scrolloff = 8
 -- LSP (via nvim-cmp capabilities)
 -- ============================================================
 local capabilities = require('blink.cmp').get_lsp_capabilities()
--- Lua LSP
-vim.lsp.config('luals', {
-  cmd = {'lua-language-server'},
-  filetypes = {'lua'},
-  root_markers = {'.luarc.json', '.luarc.jsonc', '.git'},
-  capabilities = capabilities,
+vim.diagnostic.config({ update_in_insert = true })
+vim.lsp.config("*", {
+  capabilities = capabilities
 })
 
-vim.diagnostic.config({ update_in_insert = true })
-vim.lsp.enable('luals')
-
--- C/C++ LSP (clangd)
-vim.lsp.config('clangd', {
-  cmd = {'clangd'},
-  filetypes = {'c', 'cpp'},
-  root_markers = {'.git', 'compile_commands.json'}, capabilities = capabilities,
-})
-vim.diagnostic.config({ update_in_insert = true })
-vim.lsp.enable('clangd')
 
 -- Diagnostics keymap
 vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { silent = true, desc = "Hover Error/Warning Info" })
@@ -180,18 +166,12 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 local cmp = require('blink.cmp')
 cmp.build():pwait()
 cmp.setup({
-
   keymap = { preset = 'default' },
-  completion = { documentation = { auto_show = false}},
+  completion = { documentation = { auto_show = true }},
   sources = { default = { 'lsp', 'path', 'snippets', 'buffer'}},
   fuzzy = { implementation = "prefer_rust" },
 
 })
-
-
-
-
-
 
 
 
@@ -255,11 +235,8 @@ vim.keymap.set("n", "<leader>o", "<CMD>Oil<CR>", { desc = "Open parent directory
 -- Mason (package management for LSPs, formatters, etc)
 -- ============================================================
 local mason = require("mason").setup({
-  
-
 })
 local mason_lspconfig = require("mason-lspconfig").setup {
     ensure_installed = { "lua_ls", "rust_analyzer", "clangd", "lua_ls","pyright" },
+    automatic_enable = true,
 }
-
-
