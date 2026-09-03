@@ -112,6 +112,7 @@ require("ibl").setup()
 -- ============================================================
 -- INDENTATION / TABS
 -- ============================================================
+
 vim.opt.expandtab = true
 vim.opt.tabstop = 2
 vim.opt.shiftwidth = 2
@@ -258,7 +259,7 @@ local mason = require("mason").setup({
 
 })
 local mason_lspconfig = require("mason-lspconfig").setup {
-    ensure_installed = { "lua_ls", "rust_analyzer", "clangd", "lua_ls" },
+    ensure_installed = { "lua_ls", "rust_analyzer", "clangd", "lua_ls","pyright" },
 }
 
 
