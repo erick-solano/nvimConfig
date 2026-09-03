@@ -9,7 +9,6 @@ vim.api.nvim_create_autocmd('PackChanged', { callback = function(ev)
     vim.cmd('TSUpdate')
   end
 end })
-
 -- add packages
 vim.pack.add({
   'https://github.com/nvim-treesitter/nvim-treesitter',
@@ -166,8 +165,14 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 local cmp = require('blink.cmp')
 cmp.build():pwait()
 cmp.setup({
-  keymap = { preset = 'default' },
-  completion = { documentation = { auto_show = true }},
+  keymap = {
+  preset = 'default',
+  ['<Tab>'] = { 'select_and_accept' },
+
+
+
+},
+  completion = { documentation = { auto_show = true }, menu = { auto_show = true }, accept = {auto_brackets = { enabled = true }}},
   sources = { default = { 'lsp', 'path', 'snippets', 'buffer'}},
   fuzzy = { implementation = "prefer_rust" },
 
