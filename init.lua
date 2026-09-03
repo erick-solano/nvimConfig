@@ -29,6 +29,8 @@ vim.pack.add({
   "https://github.com/neovim/nvim-lspconfig",
   "https://github.com/ibhagwan/fzf-lua.git",
   "https://github.com/stevearc/oil.nvim.git",
+  "https://github.com/mason-org/mason.nvim.git",
+  "https://github.com/mason-org/mason-lspconfig.nvim.git",
 })
 
 -- ============================================================
@@ -143,7 +145,11 @@ vim.lsp.enable('clangd')
 -- Diagnostics keymap
 vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { silent = true, desc = "Hover Error/Warning Info" })
 
--- ============================================================ nvim-ssurround (custom "," mappings instead of default "s")
+--vim.keymap.set('n', 'gd', function()
+--  vim.lsp.buf.definition()
+--end, {silent = true, desc = "Go to Definition" })
+-- ============================================================ 
+-- nvim-ssurround (custom "," mappings instead of default "s")
 -- ============================================================
 vim.g.nvim_surround_no_mappings = 1
 vim.keymap.set("n", "y,", "<Plug>(nvim-surround-normal)", { remap = true, desc = "Surround add with ," })
@@ -153,7 +159,7 @@ vim.keymap.set("n", "d,", "<Plug>(nvim-surround-delete)", { remap = true, desc =
 vim.keymap.set("n", "c,", "<Plug>(nvim-surround-change)", { remap = true, desc = "Surround change with ," })
 
 -- Visual mode
-vim.keymap.set("x", ",", "<Plug>(nvim-surround-visual)", { remap = true, desc = "Surround visual selection with ," })
+vim.keymap.set("x", "<leader>s", "<Plug>(nvim-surround-visual)", { remap = true, desc = "Surround visual selection with ," })
 
 -- Insert mode (optional)
 vim.keymap.set("i", "<C-g>,", "<Plug>(nvim-surround-insert)", { remap = true, desc = "Surround in insert mode with ," })
@@ -244,5 +250,15 @@ local oil = require("oil").setup({
   }
 })
 vim.keymap.set("n", "<leader>o", "<CMD>Oil<CR>", { desc = "Open parent directory" })
+-- ============================================================
+-- Mason (package management for LSPs, formatters, etc)
+-- ============================================================
+local mason = require("mason").setup({
+  
+
+})
+local mason_lspconfig = require("mason-lspconfig").setup {
+    ensure_installed = { "lua_ls", "rust_analyzer", "clangd", "lua_ls" },
+}
 
 
