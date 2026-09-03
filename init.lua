@@ -128,6 +128,14 @@ vim.lsp.config("*", {
 })
 
 
+-- Only make gd keybind if attatched to lsp.
+vim.api.nvim_create_autocmd('LspAttach', {
+  callback = function(ev)
+    vim.keymap.set('n', 'gd', function() vim.lsp.buf.definition() end, { desc = "Go to definition" })
+  end,
+
+})
+
 -- Diagnostics keymap
 vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { silent = true, desc = "Hover Error/Warning Info" })
 
@@ -158,6 +166,7 @@ vim.api.nvim_create_autocmd("TextYankPost", {
     vim.highlight.on_yank({ higroup = "IncSearch", timeout = 100 })
   end,
 })
+vim.opt.clipboard = "unnamedplus"
 
 -- ============================================================
 -- Blink.cmp configuration
