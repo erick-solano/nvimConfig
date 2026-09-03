@@ -212,7 +212,7 @@ local fzf = require("fzf-lua")
 
 vim.keymap.set("n", "<leader>fg", function()
   fzf.live_grep_native()
-end, { desc = "Search all files in working directory" }
+end, { desc = "Find String in working directory(Grep)" }
 )
 
 vim.keymap.set("n", "<leader>ff", function()
@@ -238,6 +238,6 @@ vim.keymap.set("n", "<leader>o", "<CMD>Oil<CR>", { desc = "Open parent directory
 local mason = require("mason").setup({
 })
 local mason_lspconfig = require("mason-lspconfig").setup {
-    ensure_installed = { "lua_ls", "rust_analyzer", "clangd", "lua_ls","pyright" },
+    ensure_installed = { "lua_ls", "rust_analyzer", "clangd", },
     automatic_enable = true,
 }
