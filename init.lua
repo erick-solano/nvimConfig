@@ -2,13 +2,6 @@
 -- PACKAGE MANAGEMENT (vim.pack)
 -- ============================================================
 vim.opt.runtimepath:prepend(vim.fn.stdpath("data") .. "/site")
-vim.api.nvim_create_autocmd('PackChanged', { callback = function(ev)
-  local name, kind = ev.data.spec.name, ev.data.kind
-  if name == 'nvim-treesitter' and kind == 'update' then
-    if not ev.data.active then vim.cmd.packadd('nvim-treesitter') end
-    vim.cmd('TSUpdate')
-  end
-end })
 -- add packages
 vim.pack.add({
   'https://github.com/nvim-treesitter/nvim-treesitter',
@@ -19,7 +12,6 @@ vim.pack.add({
   'https://github.com/saghen/blink.cmp',
   'https://github.com/hrsh7th/nvim-cmp',
   'https://github.com/luukvbaal/statuscol.nvim.git',
-  'https://github.com/lukas-reineke/indent-blankline.nvim.git',
   'https://github.com/nvim-mini/mini.surround.git',
   "https://github.com/sphamba/smear-cursor.nvim",
   "https://github.com/sindrets/diffview.nvim.git",
@@ -57,6 +49,8 @@ vim.keymap.set({ "n", "x", "o" }, "s", function()
   flash.jump()
 end, { desc = "Flash jump" })
 
+
+
 -- 'S' in normal mode → multi-window jump
 vim.keymap.set("n", "S", function()
   flash.jump({ search = { multi_window = true } })
@@ -74,7 +68,24 @@ vim.api.nvim_set_hl(0, "FlashLabel", {
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 -- ============================================================
+-- nvim-treesitter
+-- ============================================================
+require('nvim-treesitter').setup {
+  vim.api.nvim_create_autocmd('FileType', {
+    pattern = { '*' },
+    callback = function()
+      if not pcall(vim.treesitter.start)then return end
+      vim.treesitter.start()
+      vim.wo[0][0].foldexpr = 'v:lua.vim.treesitter.foldexpr()'
+      vim.wo[0][0].foldmethod = 'expr'
+      vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+    end,
+  })
+}
+
+-- ============================================================
 -- FOLDING (treesitter-based)
+
 -- ============================================================
 vim.wo.foldmethod = "expr"
 vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"
@@ -94,10 +105,7 @@ vim.opt.number=true
 vim.opt.relativenumber=true
 vim.opt.signcolumn="yes"
 
--- ============================================================
--- INDENT-BLANKLINE
--- ============================================================
-require("ibl").setup()
+
 
 -- ============================================================
 -- INDENTATION / TABS
@@ -108,7 +116,6 @@ vim.opt.tabstop = 2
 vim.opt.shiftwidth = 2
 vim.opt.softtabstop = 2
 vim.opt.scrolloff = 8
-
 -- ============================================================
 -- LSP (via nvim-cmp capabilities)
 -- ============================================================
@@ -199,6 +206,11 @@ vim.api.nvim_set_hl(0, "FlashLabel", {
 -- ============================================================
 -- LSP-CONFIG (Pre-set lsp configurations)
 -- ============================================================
+vim.lsp.config['clangd'] = {
+  cmd = {
+    "clangd",
+    "--header-insertion=never" },
+}
 -- Lsps will not work unless specified here, and installed. 
 
 -- ============================================================
