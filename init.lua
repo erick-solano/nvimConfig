@@ -20,6 +20,7 @@ vim.pack.add({
   "https://github.com/stevearc/oil.nvim.git",
   "https://github.com/mason-org/mason.nvim.git",
   "https://github.com/mason-org/mason-lspconfig.nvim.git",
+  "https://github.com/lukas-reineke/indent-blankline.nvim",
 })
 
 -- ============================================================
@@ -106,7 +107,6 @@ vim.opt.relativenumber=true
 vim.opt.signcolumn="yes"
 
 
-
 -- ============================================================
 -- INDENTATION / TABS
 -- ============================================================
@@ -165,6 +165,10 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 })
 vim.opt.clipboard = "unnamedplus"
 
+-- ============================================================
+-- Indent Blankline (the lines that show scope)
+-- ============================================================
+require("ibl").setup()
 -- ============================================================
 -- Blink.cmp configuration
 -- ============================================================
